@@ -24,19 +24,24 @@ namespace Edward
         {
             DateTime t = Convert.ToDateTime(DES.DesDecrypt(str, "Edward86"));
 
-            if (File.Exists("C:\\Windows\\System32\\" + System.Windows.Forms.Application.ProductName + ".dll"))
+            string fileFlag = @"C:\Users\" + @Environment.UserName + @"\AppData\Local\" + System.Windows.Forms.Application.ProductName + ".dll";
+
+            if (File.Exists(fileFlag))
             {
                 return false;
             }
+
             FileInfo[] files = new DirectoryInfo("C:\\").GetFiles();
             int index = 0;
             while (index < files.Length)
             {
                 if (DateTime.Compare(files[index].LastAccessTime, t) > 0)
                 {
-                    FileStream iniStram = File.Create("C:\\Windows\\System32\\" + System.Windows.Forms.Application.ProductName + ".dll");
+                    FileStream iniStram = File.Create(fileFlag);
                     iniStram.Close();
-                    return false;
+
+                    FileInfo fi = new FileInfo(fileFlag);
+                    fi.Attributes = FileAttributes.Hidden;
                 }
                 checked { ++index; }
             }
